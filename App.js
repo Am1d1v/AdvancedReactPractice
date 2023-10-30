@@ -6,9 +6,10 @@ import MainHeader from "./components/MainHeader/MainHeader";
 
 function App() {
 
+  // Check is user logged in, default value is false
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-
+  // If user logged in key isLoggedIn now is true
   useEffect(() => {
 
     const storedLoggedInInfo = localStorage.getItem('isLoggedIn');
@@ -20,12 +21,15 @@ function App() {
 
   }, [isLoggedIn]);
 
+  // Log in, add data in localStorage
   const loginHandler = (email, password) => {
     localStorage.setItem('isLoggedIn', 'true')
     setIsLoggedIn(true);
   };
 
+  // Log out, remove data from localStorage
   const logoutHandler = () => {
+    localStorage.removeItem('isLoggedIn');
     setIsLoggedIn(false);
   };
 
