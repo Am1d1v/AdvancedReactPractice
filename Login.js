@@ -11,10 +11,19 @@ const Login = (props) => {
   const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
 
-  useEffect((event) => {
-      setFormIsValid(
-        inputEmail.includes("@") && inputPassword.trim().length > 6
-      );
+  useEffect(() => {
+
+      const timer =  setTimeout(() => {
+        console.log('Initialization text');
+        setFormIsValid(inputEmail.includes("@") && inputPassword.trim().length > 6);
+      }, 2000);
+
+
+      return () => {
+        console.log('Cleared');
+        clearTimeout(timer);
+      }
+
   }, [inputEmail, inputPassword]);
 
   // Email controllable Input
