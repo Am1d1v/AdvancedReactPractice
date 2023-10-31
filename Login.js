@@ -52,14 +52,14 @@ const Login = (props) => {
       if(action.type === 'USER_INPUT'){
         return {
           value: action.value,
-          isValid: action.value.trim().length > 6
+          isValid: action.value.trim().length >= 2
         }
       }
   
       if(action.type === 'INPUT_BLUR'){
         return{
           value: previousState.value,
-          isValid: previousState.value.trim().length > 6
+          isValid: previousState.value.trim().length >= 2
         }
       }
       return {
@@ -69,20 +69,6 @@ const Login = (props) => {
     }
     const [passwordState, dispatchPasswordState] = useReducer(passwordReducer, {value: '', isValid: undefined})
 
-
-  // Controll state using useEffect()
-  useEffect(() => {
-    const timer =  setTimeout(() => {
-      console.log('Initialization text');
-      setFormIsValid(emailState.isValid && passwordState.value);
-    }, 2000);
-
-    // Clear function
-    return () => {
-      console.log('Cleared');
-      clearTimeout(timer);
-    }
-}, [emailState, passwordState]);  
 
   // Password controllable Input 
   const passwordChangeHandler = (event) => {
@@ -94,6 +80,20 @@ const Login = (props) => {
       emailState.isValid  && passwordState.isValid
     )
   };
+
+  // Controll state using useEffect()
+  useEffect(() => {
+    const timer =  setTimeout(() => {
+      console.log('Initialization text');
+      setFormIsValid(emailState.isValid && passwordState.isValid);
+    }, 1000);
+
+    // Clear function
+    return () => {
+      console.log('Cleared');
+      clearTimeout(timer);
+    }
+}, [emailState, passwordState]);  
 
   // Email Input Validation
   const validateEmailHandler = (event) => {
