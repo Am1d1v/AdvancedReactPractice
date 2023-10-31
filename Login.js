@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 
 import Card from "../UI/Card/Card";
 import styles from "./Login.module.css";
@@ -11,34 +11,71 @@ const Login = (props) => {
   const [passwordIsValid, setPasswordIsValid] = useState();
   const [formIsValid, setFormIsValid] = useState(false);
 
-  useEffect(() => {
 
-      const timer =  setTimeout(() => {
-        console.log('Initialization text');
-        setFormIsValid(inputEmail.includes("@") && inputPassword.trim().length > 6);
-      }, 2000);
+  // Controll state using useEffect()
+  // useEffect(() => {
+  //     const timer =  setTimeout(() => {
+  //       console.log('Initialization text');
+  //       setFormIsValid(inputEmail.includes("@") && inputPassword.trim().length > 6);
+  //     }, 2000);
 
+  //     // Clear function
+  //     return () => {
+  //       console.log('Cleared');
+  //       clearTimeout(timer);
+  //     }
+  // }, [inputEmail, inputPassword]);
 
-      return () => {
-        console.log('Cleared');
-        clearTimeout(timer);
+  const emailReducer = (previousState, action) => {
+
+    if(action.type === 'USER_INPUT'){
+      return {
+        value: action.value,
+        isValid: action.value.includes('@')
       }
+    }
 
-  }, [inputEmail, inputPassword]);
+    if(action.type === 'INPUT_BLUR'){
+      return{
+        value: previousState.value,
+        isValid: previousState.value.includes('@')
+      }
+    }
+
+    return {
+      value: '',
+      isValid: false
+    }
+  }
+
+  // Controll state using useReducer()
+     const [emailState, dispatchEmailState] =  useReducer(emailReducer, {value: '', isValid: undefined});
 
   // Email controllable Input
   const emailChangeHandler = (event) => {
-    setInputEmail(event.target.value);
+    dispatchEmailState({type: 'USER_INPUT', value: event.target.value});
+
+    // Checking is form(email and password) valid
+    setFormIsValid(
+      emailState.isValid && inputPassword.trim().length > 6
+    )
   };
+
+  
 
   // Password controllable Input 
   const passwordChangeHandler = (event) => {
     setInputPassword(event.target.value);
+
+    // Checking is form(email and password) valid
+    setFormIsValid(
+      emailState.isValid  && inputPassword.trim().length > 6
+    )
   };
 
   // Email Input Validation
-  const validateEmailHandler = () => {
-    setEmailIsValid(inputEmail.includes("@"));
+  const validateEmailHandler = (event) => {
+    dispatchEmailState({type: 'INPUT_BLUE'}) ;
   };
 
   // Password Input Validation
@@ -49,7 +86,7 @@ const Login = (props) => {
   // LogIn button
   const submitHandler = (event) => {
     event.preventDefault();
-    props.onLogin(inputEmail, inputPassword);
+    props.onLogin(emailState.value, inputPassword);
   };
 
   return (
@@ -57,14 +94,14 @@ const Login = (props) => {
       <form onSubmit={submitHandler}>
         <div
           className={`${styles.control} ${
-            emailIsValid === false ? styles.invalid : ""
+            emailState.isValid  === false ? styles.invalid : ""
           }`}
         >
           <label htmlFor="email">Email</label>
           <input
             type="email"
             id="email"
-            value={inputEmail}
+            value={emailState.value}
             onChange={emailChangeHandler}
             onBlur={validateEmailHandler}
           />
