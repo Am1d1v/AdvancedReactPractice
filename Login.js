@@ -69,6 +69,9 @@ const Login = (props) => {
     }
     const [passwordState, dispatchPasswordState] = useReducer(passwordReducer, {value: '', isValid: undefined})
 
+  // Destructuring to set dependencies
+  const {isValid: isEmailValid} = emailState;  
+  const {isValid: isPasswordValid} = passwordState;
 
   // Password controllable Input 
   const passwordChangeHandler = (event) => {
@@ -77,7 +80,7 @@ const Login = (props) => {
 
     // Checking is form(email and password) valid
     setFormIsValid(
-      emailState.isValid  && passwordState.isValid
+      emailState.isValid && passwordState.isValid
     )
   };
 
@@ -85,7 +88,7 @@ const Login = (props) => {
   useEffect(() => {
     const timer =  setTimeout(() => {
       console.log('Initialization text');
-      setFormIsValid(emailState.isValid && passwordState.isValid);
+      setFormIsValid(isEmailValid && isPasswordValid);
     }, 1000);
 
     // Clear function
@@ -93,7 +96,7 @@ const Login = (props) => {
       console.log('Cleared');
       clearTimeout(timer);
     }
-}, [emailState, passwordState]);  
+}, [isEmailValid, isPasswordValid]);  
 
   // Email Input Validation
   const validateEmailHandler = (event) => {
@@ -102,7 +105,7 @@ const Login = (props) => {
 
   // Password Input Validation
   const validatePasswordHandler = () => {
-    dispatchEmailState({type: 'INPUT_BLUR'})
+    dispatchPasswordState({type: 'INPUT_BLUR'})
   };
 
   // LogIn button
